@@ -2,7 +2,7 @@
 <html lang="en" ng-app="WikiApp">
 	<head>
 		<meta charset="UTF-8">
-		<title>AIRBNB</title>
+		<title>Wiki Angular</title>
 		<script src="bower_components/angular/angular.js"></script>
 		<script src="bower_components/angular-foundation-6/dist/angular-foundation.min.js"></script>
 		<script src="bower_components/angular-touch/angular-touch.min.js"></script>

@@ -34,40 +34,44 @@ app.config(['$routeProvider', function($routeProvider){
 		templateUrl: 'templates/pagerevision.tpl.html',
 		controller: "PageRevisionController",
 		controllerAs: 'ctrl',
+	}).otherwise({
+		templateUrl: 'templates/notfound.tpl.html',
+		controller: "NotFoundController",
+		controllerAs: 'ctrl',
 	})
 }]);
 
 app.run(['$rootScope', '$route', function($rootScope, $route) {
-  $rootScope.$route = $route;
-
+	$rootScope.$route = $route;
+	$rootScope.wikiDataServer = 'test';
 }]);
 
-app.controller('FrontController', ['$scope', '$http', function($scope, $http){
+app.controller('FrontController', ['$scope', '$http', '$rootScope', function($scope, $http, $rootScope){
 	 var ctrl = this;
 }]);
 
-app.controller('LoginController', ['$scope', '$http', function($scope, $http){
+app.controller('LoginController', ['$scope', '$http', '$rootScope', function($scope, $http, $rootScope){
 	 var ctrl = this;
 }]);
 
-app.controller('LogoutController', ['$scope', '$http', function($scope, $http){
+app.controller('LogoutController', ['$scope', '$http', '$rootScope', function($scope, $http, $rootScope){
 	 var ctrl = this;
 }]);
 
-app.controller('UserController', ['$scope', '$http', function($scope, $http){
+app.controller('UserController', ['$scope', '$http', '$rootScope', function($scope, $http, $rootScope){
 	 var ctrl = this;
 }]);
 
-app.controller('UserIdController', ['$scope', '$http', '$routeParams', function($scope, $http, $routeParams){
+app.controller('UserIdController', ['$scope', '$http', '$routeParams', '$rootScope', function($scope, $http, $routeParams, $rootScope){
     var ctrl= this;
     ctrl.userId = $routeParams.userId;
 }]);
 
-app.controller('PageController', ['$scope', '$http', function($scope, $http){
+app.controller('PageController', ['$scope', '$http', '$rootScope', function($scope, $http, $rootScope){
 	 var ctrl = this;
 }]);
 
-app.controller('PageSlugController', ['$scope', '$http', '$routeParams', function($scope, $http, $routeParams){
+app.controller('PageSlugController', ['$scope', '$http', '$routeParams', '$rootScope', function($scope, $http, $routeParams, $rootScope){
       var ctrl= this;
       ctrl.slug = $routeParams.slug;
       if(ctrl.slug === 'last'){
@@ -80,7 +84,11 @@ app.controller('PageSlugController', ['$scope', '$http', '$routeParams', functio
       }
 }]);
 
-app.controller('PageRevisionController', ['$scope', '$http', '$routeParams', function($scope, $http, $routeParams){
+app.controller('PageRevisionController', ['$scope', '$http', '$routeParams', '$rootScope', function($scope, $http, $routeParams, $rootScope){
     var ctrl= this;
     ctrl.slug = $routeParams.slug;
 }]);
+
+app.controller('NotFoundController', ['$scope', '$http', '$rootScope', function($scope, $http, $rootScope){
+	 var ctrl = this;
+}])

@@ -1,4 +1,4 @@
-var app = angular.module("WikiApp", ["ngTouch", "mm.foundation", "ngMap","ngRoute"]);
+var app = angular.module("WikiApp", ["ngTouch", "ngMap", "ngRoute"]);
 
 app.config(['$routeProvider', function($routeProvider){
 	$routeProvider.

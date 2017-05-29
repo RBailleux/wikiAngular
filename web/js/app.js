@@ -97,17 +97,17 @@ app.controller('PageEditController', ['$scope', '$http', '$routeParams', '$rootS
     var ctrl= this;
     ctrl.slug = $routeParams.slug;
     
-    $scope.tinymceModel = 'Initial content';
+    $scope.initialContent = 'Initial content';
 
     $scope.getContent = function() {
-      console.log('Editor content:', $scope.tinymceModel);
+      console.log('Editor content:', $scope.initialContent);
     };
 
     $scope.setContent = function() {
-      $scope.tinymceModel = 'Time: ' + (new Date());
+      $scope.initialContent = 'Time: ' + (new Date());
     };
 
-    $scope.tinymceOptions = {
+    $scope.editorOptions = {
       plugins: 'link image code',
       toolbar: 'undo redo | bold italic | alignleft aligncenter alignright | code'
     };

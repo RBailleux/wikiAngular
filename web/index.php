@@ -12,11 +12,13 @@
 		<script src="http://maps.google.com/maps/api/js?key=AIzaSyA-z8PTHzvOaIlCOhWo0cVJraB7R4i6JJo&libraries=geometry"></script>
 		
 		<script type="text/javascript" src="bower_components/tinymce/tinymce.js"></script>
+		<script type="text/javascript" src="bower_components/jquery/dist/jquery.min.js"></script>
+		<script type="text/javascript" src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
 		<script type="text/javascript" src="js/app.js"></script>
 		<script type="text/javascript" src="js/angular-ui-tinymce.min.js"></script>
 		
 		
-		<link rel="stylesheet" href="bower_components/foundation-sites/dist/css/foundation-flex.min.css" />
+		<link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css" />
 		<link rel="stylesheet" href="css/app.css" />
 	</head>
 	<body>

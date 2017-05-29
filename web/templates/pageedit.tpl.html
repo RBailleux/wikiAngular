@@ -1,7 +1,11 @@
 <h1>Page - {{ctrl.slug}} - Edit</h1>
 
 <form method="post" ng-controller="PageEditController" action="">
-	<input type="text" name="title">
-	<textarea ui-tinymce="editorOptions" ng-model="initialContent" name="content"></textarea>
-	<input type="submit">
+	<div class="form-group">
+	    <input type="text" class="form-control" id="title" placeholder="Titre" required>
+	</div>
+	<div class="form-group">
+		<textarea class="form-control" ui-tinymce="editorOptions" ng-model="initialContent" name="content" required></textarea>
+	</div>
+	<button type="submit" class="btn btn-primary">Submit</button>
 </form>

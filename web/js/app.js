@@ -1,4 +1,4 @@
-var app = angular.module("WikiApp", ["ngTouch", "ngMap", "ngRoute", "ui.tinymce"]);
+var app = angular.module("WikiApp", ["ngCookies", "ngTouch", "ngMap", "ngRoute", "ui.tinymce"]);
 
 app.config(['$routeProvider', function($routeProvider){
 	$routeProvider.
@@ -93,7 +93,7 @@ app.controller('PageRevisionController', ['$scope', '$http', '$routeParams', '$r
     ctrl.slug = $routeParams.slug;
 }]);
 
-app.controller('PageEditController', ['$scope', '$http', '$routeParams', '$rootScope', function($scope, $http, $routeParams, $rootScope){
+app.controller('PageEditController', ['$scope', '$http', '$routeParams', '$rootScope', '$cookies', function($scope, $http, $routeParams, $rootScope, $cookies){
     var ctrl= this;
     ctrl.slug = $routeParams.slug;
     
@@ -111,6 +111,11 @@ app.controller('PageEditController', ['$scope', '$http', '$routeParams', '$rootS
       plugins: 'link image code',
       toolbar: 'undo redo | bold italic | alignleft aligncenter alignright | code'
     };
+    
+    // Retrieving a cookie
+    var favoriteCookie = $cookies.get('myFavorite');
+    // Setting a cookie
+    $cookies.put('myFavorite', 'oatmeal');
 }]);
 
 app.controller('NotFoundController', ['$scope', '$http', '$rootScope', function($scope, $http, $rootScope){

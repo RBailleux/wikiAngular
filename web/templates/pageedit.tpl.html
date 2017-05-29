@@ -1,1 +1,7 @@
 <h1>Page - {{ctrl.slug}} - Edit</h1>
+
+<form method="post" ng-controller="PageEditController">
+	<textarea ui-tinymce="tinymceOptions" ng-model="tinymceModel"></textarea>
+	<button ng-click="getContent()">Get content</button>
+	<button ng-click="setContent()">Set content</button>
+</form>

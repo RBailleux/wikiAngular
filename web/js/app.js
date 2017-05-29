@@ -1,4 +1,4 @@
-var app = angular.module("WikiApp", ["ngTouch", "ngMap", "ngRoute"]);
+var app = angular.module("WikiApp", ["ngTouch", "ngMap", "ngRoute", "ui.tinymce"]);
 
 app.config(['$routeProvider', function($routeProvider){
 	$routeProvider.
@@ -96,6 +96,21 @@ app.controller('PageRevisionController', ['$scope', '$http', '$routeParams', '$r
 app.controller('PageEditController', ['$scope', '$http', '$routeParams', '$rootScope', function($scope, $http, $routeParams, $rootScope){
     var ctrl= this;
     ctrl.slug = $routeParams.slug;
+    
+    $scope.tinymceModel = 'Initial content';
+
+    $scope.getContent = function() {
+      console.log('Editor content:', $scope.tinymceModel);
+    };
+
+    $scope.setContent = function() {
+      $scope.tinymceModel = 'Time: ' + (new Date());
+    };
+
+    $scope.tinymceOptions = {
+      plugins: 'link image code',
+      toolbar: 'undo redo | bold italic | alignleft aligncenter alignright | code'
+    };
 }]);
 
 app.controller('NotFoundController', ['$scope', '$http', '$rootScope', function($scope, $http, $rootScope){

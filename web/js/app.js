@@ -34,6 +34,10 @@ app.config(['$routeProvider', function($routeProvider){
 		templateUrl: 'templates/pagerevision.tpl.html',
 		controller: "PageRevisionController",
 		controllerAs: 'ctrl',
+	}).when('/page/:slug/edit', {
+		templateUrl: 'templates/pageedit.tpl.html',
+		controller: "PageEditController",
+		controllerAs: 'ctrl',
 	}).otherwise({
 		templateUrl: 'templates/notfound.tpl.html',
 		controller: "NotFoundController",
@@ -85,6 +89,11 @@ app.controller('PageSlugController', ['$scope', '$http', '$routeParams', '$rootS
 }]);
 
 app.controller('PageRevisionController', ['$scope', '$http', '$routeParams', '$rootScope', function($scope, $http, $routeParams, $rootScope){
+    var ctrl= this;
+    ctrl.slug = $routeParams.slug;
+}]);
+
+app.controller('PageEditController', ['$scope', '$http', '$routeParams', '$rootScope', function($scope, $http, $routeParams, $rootScope){
     var ctrl= this;
     ctrl.slug = $routeParams.slug;
 }]);

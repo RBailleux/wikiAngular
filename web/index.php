@@ -8,6 +8,7 @@
 		<script src="bower_components/ngmap/build/scripts/ng-map.min.js"></script>
 		<script src="bower_components/angular-route/angular-route.min.js"></script>
 		<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular-cookies.js"></script>
+		<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular-sanitize.js"></script>
 		<script src="http://maps.google.com/maps/api/js?key=AIzaSyA-z8PTHzvOaIlCOhWo0cVJraB7R4i6JJo&libraries=geometry"></script>
 		
 		<script type="text/javascript" src="bower_components/tinymce/tinymce.js"></script>

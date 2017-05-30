@@ -1,44 +1,67 @@
-var app = angular.module("WikiApp", ["ngCookies", "ngTouch", "ngMap", "ngRoute", "ui.tinymce"]);
+var app = angular.module("WikiApp", ["ngCookies", "ngTouch", "ngMap", "ngRoute", "ui.tinymce", "ngSanitize"]);
 
 //FACTORY
 
 app.factory('utilit', ['$cookies', '$rootScope', '$http', function ($cookies, $rootScope, $http) {
- return {
-     arrayToJson: function(data) {
-         console.log(JSON.stringify(data));
-     },
- 	 doLogin: function(data) {
- 		var logUser = $cookies.get('angularWikiUserToken');
+	var methods = {};
+	
+	methods.arrayToJson = function(data){
+		 console.log(JSON.stringify(data));
+	};
+	
+	methods.doLogin = function(data){
+		var logUser = $cookies.get('angularWikiUserToken');
  		$cookies.put('angularWikiUserToken', '456');
- 	 },
- 	 doLogout: function() {
- 		$cookies.remove('angularWikiUserToken');
- 	 },
- 	 isUserLogged: function() {
- 		 var logUser = $cookies.get('angularWikiUserToken');
- 		 if(logUser){
- 			 return true;
- 		 }
- 		 return false;
- 	 },
- 	 isValidEmail: function(email) {
- 		var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+	};
+	
+	methods.doLogout = function(){
+		$cookies.remove('angularWikiUserToken');
+	};
+	
+	methods.isUserLogged = function(){
+		var logUser = $cookies.get('angularWikiUserToken');
+		if(logUser){
+			return true;
+		}
+		return false;
+	};
+	
+	methods.isValidEmail = function(email){
+		var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 	    return re.test(email);
- 	 },
- 	 submitData: function(_data, _method, _url){
- 		 return $http({
- 			 method: _method,
- 			 url: _url,
- 			 data: _data
- 		 })
- 	 },
- 	 getData: function(_url){
- 		 return $http({
- 			 method: 'GET',
- 			 url: _url
- 		 })
- 	 }
- };
+	};
+	
+	methods.submitData = function(_data, _method, _url){
+		return $http({
+			method: _method,
+			url: _url,
+			data: _data
+		})
+	};
+	
+	methods.getData = function(_url){
+		return $http.get(_url)
+	    .then(function(response) {
+	        return response.data;
+	    }, function(response) {
+	        return false;
+	    });
+	};
+	
+	methods.isWikiCreated = function(slug){
+		var slugData = methods.getData($rootScope.wikiDataServer+'/page/'+slug+".json");
+		var data = slugData.then(function(response){
+			if(response){
+				return true;
+			}
+			else{
+				return false;
+			}
+		});
+		return data;
+	};
+	
+	return methods;
 }]);
 
 app.config(['$routeProvider', function($routeProvider){
@@ -275,22 +298,32 @@ app.controller('PageController', ['$scope', '$http', '$rootScope', function($sco
 	 var ctrl = this;
 }]);
 
-app.controller('PageSlugController', ['$scope', '$http', '$routeParams', '$rootScope', '$sce', function($scope, $http, $routeParams, $rootScope, $sce){
-      var ctrl= this;
-      ctrl.slug = $routeParams.slug;
-      ctrl.wikiExists = true;
-      $scope.wikiContent = '<b>Nope</b>';
-      if(ctrl.wikiExists){
-    	  $scope.wikiContent = '<b>Yes</b>';
-      }
-      if(ctrl.slug === 'last'){
-    	  //@TODO RETURN THE LAST SUBMITED PAGE
-    	  ctrl.slug = 'last submited page';
-      }
-      if(ctrl.slug === 'best_rated'){
-    	  //@TODO RETURN THE BEST RATED PAGE
-    	  ctrl.slug = 'best rated page';
-      }
+app.controller('PageSlugController', ['$scope', '$http', '$routeParams', '$rootScope', 'utilit', function($scope, $http, $routeParams, $rootScope, utilit){
+	var ctrl= this;
+	ctrl.slug = $routeParams.slug;
+	
+	if(ctrl.slug === 'last'){
+	ctrl.slug = 'last submited page';
+	}
+	else if(ctrl.slug === 'best_rated'){
+	//@TODO RETURN THE BEST RATED PAGE
+	ctrl.slug = 'best rated page';
+	}
+	else {
+		var promise = utilit.getData($rootScope.wikiDataServer+'/page/'+$routeParams.slug+".json");
+		promise.then(function(response){
+			if(response){
+				console.log(response);
+				$scope.wikiExists = true;
+				ctrl.title = response.title;
+				$scope.content = response.content;
+				
+			}
+			else{
+				$scope.wikiExists = false;
+			}
+		})
+	}
 }]);
 
 app.controller('PageRevisionController', ['$scope', '$http', '$routeParams', '$rootScope', function($scope, $http, $routeParams, $rootScope){

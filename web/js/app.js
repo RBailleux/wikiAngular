@@ -109,7 +109,7 @@ app.controller('LogoutController', ['$scope', '$http', '$rootScope', '$cookies',
 	 $scope.isUserLogged = utilit.isUserLogged();
 	 if(utilit.isUserLogged()){
 		utilit.doLogout();
-	 	$scope.counter = 5;
+	 	$scope.counter = 3;
 		$scope.onTimeout = function(){
 	        $scope.counter--;
 	        mytimeout = $timeout($scope.onTimeout,1000);

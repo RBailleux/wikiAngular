@@ -342,13 +342,17 @@ app.controller('PageEditController', ['$scope', '$http', '$routeParams', '$rootS
     var ctrl= this;
     ctrl.slug = $routeParams.slug;
     ctrl.pageTitle = "Édition : "+ctrl.slug;
-    ctrl.userToken = 'userToken123456';
+    $scope.isUserLogged = utilit.isUserLogged();
+    if($scope.isUserLogged){
+        ctrl.userToken = 'userToken123456';
+    }
     
     var promise = utilit.getData($rootScope.wikiDataServer+'/page/'+$routeParams.slug+".json");
 	promise.then(function(response){
 		if(response){
 		    $scope.initialContent = response.content;
 		    $scope.initialTitle = response.title;
+		    ctrl.title = response.title;
 
 
 		    $scope.editorOptions = {

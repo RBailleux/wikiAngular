@@ -1,15 +1,10 @@
-<section class="content-header">
-  <h1>
-    {{ctrl.slug}}
-  </h1>
-  <ol class="breadcrumb">
-    <li><a href="#"><i class="fa fa-dashboard"></i>Accueil</a></li>
-    <li><a href="#!/page/{{ctrl.slug}}">{{ctrl.slug}}</a></li>
-    <li class="active">Edit</li>
-  </ol>
-</section>
 <div class="row">
     <div class="col-md-12">
+    	<ol class="breadcrumb">
+		    <li><a href="#"><i class="fa fa-home"></i> <span>Accueil</span></a></li>
+		    <li><a href="#!/page/{{ctrl.slug}}">{{ctrl.title}}</a></li>
+		    <li class="active">Édition</li>
+		</ol>
         <div class="box box-info">
             <div class="box-header with-border">
                 <h3 class="box-title">
@@ -18,7 +13,7 @@
             </div>
             <div class="box-body">
                 <div class="row">
-                    <div class="col-md-12">
+                    <div class="col-md-12" ng-if="isUserLogged">
                         <form ng-controller="PageEditController" name="wikiSubmit" novalidate>
 		                    <div class="form-group">
 		                        <input type="text" class="form-control" id="title" placeholder="Titre" ng-model="initialTitle" required>
@@ -29,9 +24,12 @@
 		                    <button type="submit" value="SUBMIT" class="btn btn-primary" ng-click="postData(wikiSubmit)">Soumettre</button>
 			             </form>
                     </div>
+                    <div class="col-md-12" ng-if="!isUserLogged">
+                    	<p>Vous ne pouvez pas éditer cette page</p>
+                    	<a href="#!/login">Connectez-vous</a>
+                    </div>
                 </div>
             </div>
         </div>
-        
     </div>
 </div>

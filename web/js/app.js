@@ -300,29 +300,34 @@ app.controller('PageController', ['$scope', '$http', '$rootScope', function($sco
 
 app.controller('PageSlugController', ['$scope', '$http', '$routeParams', '$rootScope', 'utilit', function($scope, $http, $routeParams, $rootScope, utilit){
 	var ctrl= this;
+	
+	$scope.isUserLogged = utilit.isUserLogged();
+	$scope.wikiExists = true;
 	ctrl.slug = $routeParams.slug;
 	
-	if(ctrl.slug === 'last'){
-	ctrl.slug = 'last submited page';
-	}
-	else if(ctrl.slug === 'best_rated'){
-	//@TODO RETURN THE BEST RATED PAGE
-	ctrl.slug = 'best rated page';
-	}
-	else {
-		var promise = utilit.getData($rootScope.wikiDataServer+'/page/'+$routeParams.slug+".json");
-		promise.then(function(response){
-			if(response){
-				console.log(response);
-				$scope.wikiExists = true;
-				ctrl.title = response.title;
-				$scope.content = response.content;
-				
-			}
-			else{
-				$scope.wikiExists = false;
-			}
-		})
+	switch(ctrl.slug){
+		case 'last':
+			break;
+		case 'best_rated':
+			break;
+		case 'new':
+			ctrl.title = 'Nouvelle page';
+			break;
+		default:
+			var promise = utilit.getData($rootScope.wikiDataServer+'/page/'+$routeParams.slug+".json");
+			promise.then(function(response){
+				if(response){
+					console.log(response);
+					$scope.wikiExists = true;
+					ctrl.title = response.title;
+					$scope.content = response.content;
+					
+				}
+				else{
+					$scope.wikiExists = false;
+				}
+			});
+			break;
 	}
 }]);
 

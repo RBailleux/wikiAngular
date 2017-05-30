@@ -18,7 +18,9 @@
                         <div ng-bind-html="content"></div>
 					</div>
 					<div class="col-md-12" ng-if="!wikiExists">
-
+						<h1>Ce Wiki n'existe pas</h1>
+						<a ng-if="!isUserLogged" href="#!/login">Contribuer !</a>
+						<a ng-if="isUserLogged" href="#!/page/new">Contribuer !</a>
 					</div>
                 </div>
             </div>

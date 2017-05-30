@@ -13,7 +13,10 @@
               <h3 class="box-title">Déconnexion</h3>
             </div>
 			<div class="box-body">
-			     <p>Redirection sur la page d'accueil dans {{counter}} secondes.</p>
+			     <p>Redirection sur la page d'accueil dans {{counter}} 
+			         <span ng-show="counter > 1">secondes.</span>
+			         <span ng-show="counter <= 1">seconde.</span>
+			     </p>
 			</div>
           </div>
         

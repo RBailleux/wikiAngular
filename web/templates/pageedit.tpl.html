@@ -19,14 +19,14 @@
             <div class="box-body">
                 <div class="row">
                     <div class="col-md-12">
-                        <form method="post" ng-controller="PageEditController" action="">
+                        <form ng-controller="PageEditController" name="wikiSubmit" novalidate>
 		                    <div class="form-group">
-		                        <input type="text" class="form-control" id="title" placeholder="Titre" required>
+		                        <input type="text" class="form-control" id="title" placeholder="Titre" ng-model="initialTitle" required>
 		                    </div>
 		                    <div class="form-group">
-		                        <textarea class="form-control" ui-tinymce="editorOptions" ng-model="initialContent" name="content" required></textarea>
+		                        <textarea class="form-control" ui-tinymce="editorOptions" ng-model="initialContent" required></textarea>
 		                    </div>
-		                    <button type="submit" class="btn btn-primary">Soumettre</button>
+		                    <button type="submit" value="SUBMIT" class="btn btn-primary" ng-click="postData(wikiSubmit)">Soumettre</button>
 			             </form>
                     </div>
                 </div>

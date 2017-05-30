@@ -1,5 +1,15 @@
 var app = angular.module("WikiApp", ["ngCookies", "ngTouch", "ngMap", "ngRoute", "ui.tinymce"]);
 
+//FACTORY
+
+app.factory('utilit', function () {
+ return {
+     arrayToJson: function(data) {
+         console.log(JSON.stringify(data));
+     }
+ };
+});
+
 app.config(['$routeProvider', function($routeProvider){
 	$routeProvider.
 		when('/', {
@@ -50,6 +60,8 @@ app.run(['$rootScope', '$route', function($rootScope, $route) {
 	$rootScope.wikiDataServer = 'test';
 }]);
 
+//CONTROLLERS
+
 app.controller('FrontController', ['$scope', '$http', '$rootScope', function($scope, $http, $rootScope){
 	 var ctrl = this;
 }]);
@@ -93,10 +105,11 @@ app.controller('PageRevisionController', ['$scope', '$http', '$routeParams', '$r
     ctrl.slug = $routeParams.slug;
 }]);
 
-app.controller('PageEditController', ['$scope', '$http', '$routeParams', '$rootScope', '$cookies', function($scope, $http, $routeParams, $rootScope, $cookies){
+app.controller('PageEditController', ['$scope', '$http', '$routeParams', '$rootScope','$cookies', 'utilit',  function($scope, $http, $routeParams, $rootScope, $cookies, utilit){
     var ctrl= this;
     ctrl.slug = $routeParams.slug;
     ctrl.pageTitle = "Création / Édition : "+ctrl.slug;
+    ctrl.userToken = 'userToken123456';
     
     $scope.initialContent = 'Initial content';
 
@@ -111,6 +124,16 @@ app.controller('PageEditController', ['$scope', '$http', '$routeParams', '$rootS
     $scope.editorOptions = {
       plugins: 'link image code',
       toolbar: 'undo redo | bold italic | alignleft aligncenter alignright | code'
+    };
+    
+    $scope.postData=function(testForm){
+    	var dataForm = 
+    		{
+    			'title' : $scope.initialTitle, 
+    			'content' : $scope.initialContent,
+    			'userToken' : ctrl.userToken
+    		}
+		utilit.arrayToJson(dataForm);
     };
     
     // Retrieving a cookie

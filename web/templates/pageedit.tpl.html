@@ -1,11 +1,37 @@
-<h1>Page - {{ctrl.slug}} - Edit</h1>
-
-<form method="post" ng-controller="PageEditController" action="">
-	<div class="form-group">
-	    <input type="text" class="form-control" id="title" placeholder="Titre" required>
-	</div>
-	<div class="form-group">
-		<textarea class="form-control" ui-tinymce="editorOptions" ng-model="initialContent" name="content" required></textarea>
-	</div>
-	<button type="submit" class="btn btn-primary">Submit</button>
-</form>
+<section class="content-header">
+  <h1>
+    {{ctrl.slug}}
+  </h1>
+  <ol class="breadcrumb">
+    <li><a href="#"><i class="fa fa-dashboard"></i>Accueil</a></li>
+    <li><a href="#!/page/{{ctrl.slug}}">{{ctrl.slug}}</a></li>
+    <li class="active">Edit</li>
+  </ol>
+</section>
+<div class="row">
+    <div class="col-md-12">
+        <div class="box box-info">
+            <div class="box-header with-border">
+                <h3 class="box-title">
+                    {{ctrl.pageTitle}}
+                </h3>
+            </div>
+            <div class="box-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <form method="post" ng-controller="PageEditController" action="">
+		                    <div class="form-group">
+		                        <input type="text" class="form-control" id="title" placeholder="Titre" required>
+		                    </div>
+		                    <div class="form-group">
+		                        <textarea class="form-control" ui-tinymce="editorOptions" ng-model="initialContent" name="content" required></textarea>
+		                    </div>
+		                    <button type="submit" class="btn btn-primary">Soumettre</button>
+			             </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+</div>

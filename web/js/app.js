@@ -96,6 +96,7 @@ app.controller('PageRevisionController', ['$scope', '$http', '$routeParams', '$r
 app.controller('PageEditController', ['$scope', '$http', '$routeParams', '$rootScope', '$cookies', function($scope, $http, $routeParams, $rootScope, $cookies){
     var ctrl= this;
     ctrl.slug = $routeParams.slug;
+    ctrl.pageTitle = "Création / Édition : "+ctrl.slug;
     
     $scope.initialContent = 'Initial content';
 

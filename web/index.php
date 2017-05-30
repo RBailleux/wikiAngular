@@ -25,8 +25,10 @@
 		<link rel="stylesheet" href="css/app.css" />
 	</head>
 	<body class="hold-transition skin-blue sidebar-mini">
-		<?php require_once('header.php');?>
-		<?php require_once('sidebar.php');?>
+		<div ng-controller="NavigationController">
+			<div ng-include="header"></div>
+			<div ng-include="sidebar"></div>
+		</div>
 		<div class="content-wrapper">
 			<section class="content">
 				<div ng-view></div>

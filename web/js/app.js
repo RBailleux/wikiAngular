@@ -76,7 +76,14 @@ app.run(['$rootScope', '$route', 'utilit', function($rootScope, $route, utilit) 
 }]);
 
 //CONTROLLERS
-
+app.controller('NavigationController', ['$scope', '$http', '$rootScope', '$cookies', '$window', 'utilit', '$interval', function($scope, $http, $rootScope, $cookies, $window, utilit, $interval){
+	var ctrl = this;
+	$interval(function(){
+		$scope.isUserLogged = utilit.isUserLogged();
+	}, 100);
+	$scope.header = 'templates/header.tpl.html';
+	$scope.sidebar = 'templates/sidebar.tpl.html';
+}]);
 app.controller('FrontController', ['$scope', '$http', '$rootScope', function($scope, $http, $rootScope){
 	 var ctrl = this;
 }]);

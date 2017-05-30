@@ -20,7 +20,11 @@ app.factory('utilit', ['$cookies', '$rootScope', function ($cookies, $rootScope)
  			 return true;
  		 }
  		 return false;
- 	 }
+ 	 },
+ 	isValidEmail: function(email) {
+ 		var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+	    return re.test(email);
+ 	}
  };
 }]);
 
@@ -37,6 +41,10 @@ app.config(['$routeProvider', function($routeProvider){
 	}).when('/logout', {
 		templateUrl: 'templates/logout.tpl.html',
 		controller: "LogoutController",
+		controllerAs: 'ctrl',
+	}).when('/signup', {
+		templateUrl: 'templates/signup.tpl.html',
+		controller: "SignupController",
 		controllerAs: 'ctrl',
 	}).when('/user', {
 		templateUrl: 'templates/user.tpl.html',
@@ -106,7 +114,6 @@ app.controller('LoginController', ['$scope', '$http', '$rootScope', '$cookies', 
 		else{
 			$scope.errors = true;
 			$scope.errorsMsg = 'L\'identifiant ou le mot de passe est incorrect';
-			$scope.errors = 'L\'identifiant ou le mot de passe est incorrect';
 		}
 	};
 }]);
@@ -127,6 +134,82 @@ app.controller('LogoutController', ['$scope', '$http', '$rootScope', '$cookies',
 		}
 	   var mytimeout = $timeout($scope.onTimeout,1000);
 	 }
+}]);
+
+app.controller('SignupController', ['$scope', '$http', '$rootScope', '$cookies', '$window', 'utilit', function($scope, $http, $rootScope, $cookies, $window, utilit){
+	var ctrl = this;
+	$scope.isUserLogged = utilit.isUserLogged();
+	$scope.errors = false;
+	$scope.errorsMsg = new Array();
+	$scope.postData=function(form){
+		//LOGIN
+		console.log($scope.login)
+		if(!$scope.login){
+			var msgIndex = $scope.errorsMsg.indexOf('L\'identifiant doit être renseigné');
+			$scope.errors = true;
+			if (msgIndex < 0) {
+				$scope.errorsMsg.push('L\'identifiant doit être renseigné');
+			}
+		}
+		else{
+			var msgIndex = $scope.errorsMsg.indexOf('L\'identifiant doit être renseigné');
+			if (msgIndex > -1) {
+				$scope.errorsMsg.splice(msgIndex, 1);
+			}
+		}
+		//PASSWORDS
+		if(!$scope.password1 || !$scope.password2){
+			$scope.errors = true;
+			var msgIndex = $scope.errorsMsg.indexOf('Les mots de passe doivent être renseignés');
+			if (msgIndex < 0) {
+				$scope.errorsMsg.push('Les mots de passe doivent être renseignés');
+			}
+		}
+		else{
+			var msgIndex = $scope.errorsMsg.indexOf('Les mots de passe doivent être renseignés');
+			if (msgIndex > -1) {
+				$scope.errorsMsg.splice(msgIndex, 1);
+			}
+		}
+		if($scope.password1 != $scope.password2){
+			var msgIndex = $scope.errorsMsg.indexOf('Les mots de passes doivent être identiques');
+			$scope.errors = true;
+			if (msgIndex < 0) {
+				$scope.errorsMsg.push('Les mots de passes doivent être identiques');
+			}
+		}
+		else{
+			var msgIndex = $scope.errorsMsg.indexOf('Les mots de passes doivent être identiques');
+			if (msgIndex > -1) {
+				$scope.errorsMsg.splice(msgIndex, 1);
+			}
+		}
+		
+		//EMAIL
+		if(!utilit.isValidEmail($scope.email)){
+			$scope.errors = true;
+			var notValidMsg = 'L\'adresse email saisie n\'est pas valide';
+			if(!$scope.errorsMsg.includes(notValidMsg)){
+				$scope.errorsMsg.push(notValidMsg);
+			}
+		}
+		else{
+			var msgIndex = $scope.errorsMsg.indexOf('L\'adresse email saisie n\'est pas valide');
+			if (msgIndex > -1) {
+				$scope.errorsMsg.splice(msgIndex, 1);
+			}
+		}
+		
+		if($scope.errorsMsg.length == 0){
+			$scope.errors = false;
+			var dataForm = 
+			{
+				'login' : $scope.login, 
+				'password' : $scope.password,
+				'email' : $scope.email
+			}
+		}
+	};
 }]);
 
 app.controller('UserController', ['$scope', '$http', '$rootScope', function($scope, $http, $rootScope){

@@ -2,7 +2,7 @@ var app = angular.module("WikiApp", ["ngCookies", "ngTouch", "ngMap", "ngRoute",
 
 //FACTORY
 
-app.factory('utilit', ['$cookies', '$rootScope', function ($cookies, $rootScope) {
+app.factory('utilit', ['$cookies', '$rootScope', '$http', function ($cookies, $rootScope, $http) {
  return {
      arrayToJson: function(data) {
          console.log(JSON.stringify(data));
@@ -21,10 +21,23 @@ app.factory('utilit', ['$cookies', '$rootScope', function ($cookies, $rootScope)
  		 }
  		 return false;
  	 },
- 	isValidEmail: function(email) {
+ 	 isValidEmail: function(email) {
  		var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 	    return re.test(email);
- 	}
+ 	 },
+ 	 submitData: function(_data, _method, _url){
+ 		 return $http({
+ 			 method: _method,
+ 			 url: _url,
+ 			 data: _data
+ 		 })
+ 	 },
+ 	 getData: function(_url){
+ 		 return $http({
+ 			 method: 'GET',
+ 			 url: _url
+ 		 })
+ 	 }
  };
 }]);
 

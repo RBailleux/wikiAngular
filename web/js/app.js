@@ -102,18 +102,24 @@ app.controller('LoginController', ['$scope', '$http', '$rootScope', '$cookies', 
 	$scope.errors = false;
 	$scope.errorsMsg = '';
 	$scope.postData=function(form){
-		var dataForm = 
+		if(!$scope.login || !$scope.password){
+			$scope.errors = true;
+			$scope.errorsMsg = 'Tous les champs doivent être remplis';
+		}
+		else{
+			var dataForm = 
 			{
 				'login' : $scope.login, 
 				'password' : $scope.password
 			}
-		utilit.doLogin(utilit.arrayToJson(dataForm));
-		if(utilit.isUserLogged()){
-			$window.location.href ='#!';
-		}
-		else{
-			$scope.errors = true;
-			$scope.errorsMsg = 'L\'identifiant ou le mot de passe est incorrect';
+			utilit.doLogin(utilit.arrayToJson(dataForm));
+			if(utilit.isUserLogged()){
+				$window.location.href ='#!';
+			}
+			else{
+				$scope.errors = true;
+				$scope.errorsMsg = 'L\'identifiant ou le mot de passe est incorrect';
+			}
 		}
 	};
 }]);

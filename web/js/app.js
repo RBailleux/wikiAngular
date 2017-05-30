@@ -2,13 +2,27 @@ var app = angular.module("WikiApp", ["ngCookies", "ngTouch", "ngMap", "ngRoute",
 
 //FACTORY
 
-app.factory('utilit', function () {
+app.factory('utilit', ['$cookies', function ($cookies) {
  return {
      arrayToJson: function(data) {
          console.log(JSON.stringify(data));
-     }
+     },
+ 	 doLogin: function(data) {
+ 		var logUser = $cookies.get('angularWikiUserToken');
+ 		$cookies.put('angularWikiUserToken', '456');
+ 	 },
+ 	 doLogout: function() {
+ 		$cookies.remove('angularWikiUserToken');
+ 	 },
+ 	 isUserLogged: function() {
+ 		 var logUser = $cookies.get('angularWikiUserToken');
+ 		 if(logUser){
+ 			 return true;
+ 		 }
+ 		 return false;
+ 	 }
  };
-});
+}]);
 
 app.config(['$routeProvider', function($routeProvider){
 	$routeProvider.
@@ -55,9 +69,10 @@ app.config(['$routeProvider', function($routeProvider){
 	})
 }]);
 
-app.run(['$rootScope', '$route', function($rootScope, $route) {
+app.run(['$rootScope', '$route', 'utilit', function($rootScope, $route, utilit) {
 	$rootScope.$route = $route;
 	$rootScope.wikiDataServer = 'test';
+	$rootScope.isUserLogged = utilit.isUserLogged();
 }]);
 
 //CONTROLLERS
@@ -66,20 +81,38 @@ app.controller('FrontController', ['$scope', '$http', '$rootScope', function($sc
 	 var ctrl = this;
 }]);
 
-app.controller('LoginController', ['$scope', '$http', '$rootScope', '$cookies', 'utilit', function($scope, $http, $rootScope, $cookies, utilit){
-	 var ctrl = this;
-    $scope.postData=function(form){
-    	var dataForm = 
-    		{
-    			'login' : $scope.login, 
-    			'password' : $scope.password
-    		}
-		utilit.arrayToJson(dataForm);
-    };
+app.controller('LoginController', ['$scope', '$http', '$rootScope', '$cookies', '$window', 'utilit', function($scope, $http, $rootScope, $cookies, $window, utilit){
+	var ctrl = this;
+	$scope.isUserLogged = utilit.isUserLogged();
+	$scope.postData=function(form){
+		var dataForm = 
+			{
+				'login' : $scope.login, 
+				'password' : $scope.password
+			}
+		utilit.doLogin(utilit.arrayToJson(dataForm));
+		if(utilit.isUserLogged()){
+			$window.location.href ='#!';
+		}
+	};
 }]);
 
-app.controller('LogoutController', ['$scope', '$http', '$rootScope', function($scope, $http, $rootScope){
+app.controller('LogoutController', ['$scope', '$http', '$rootScope', '$cookies', '$timeout', '$window', 'utilit', function($scope, $http, $rootScope, $cookies, $timeout, $window, utilit){
 	 var ctrl = this;
+	 $scope.isUserLogged = utilit.isUserLogged();
+	 if(utilit.isUserLogged()){
+		utilit.doLogout();
+	 	$scope.counter = 5;
+		$scope.onTimeout = function(){
+	        $scope.counter--;
+	        mytimeout = $timeout($scope.onTimeout,1000);
+	        if($scope.counter == -1){
+	          $timeout.cancel(mytimeout);
+	          $window.location.href ='#!';
+	        }
+		}
+	   var mytimeout = $timeout($scope.onTimeout,1000);
+	 }
 }]);
 
 app.controller('UserController', ['$scope', '$http', '$rootScope', function($scope, $http, $rootScope){

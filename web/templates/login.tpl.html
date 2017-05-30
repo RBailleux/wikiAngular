@@ -1,6 +1,14 @@
 <div class="row">
     <div class="col-md-12">
-        <div class="box box-info">
+        <div class="box box-info" ng-if="isUserLogged">
+             <div class="box-header with-border">
+                <h3 class="box-title">Vous êtes déjà connecté!</h3>
+            </div>
+            <div class="box-body">
+                <a href="#!/logout" class="btn btn-info">Se déconnecter</a>
+            </div>
+        </div>
+        <div class="box box-info" ng-if="!isUserLogged">
             <div class="box-header with-border">
               <h3 class="box-title">Connexion</h3>
             </div>

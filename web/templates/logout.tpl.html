@@ -1,1 +1,21 @@
-<h1>Logout</h1>
+<div class="row">
+    <div class="col-md-12">
+        <div class="box box-info" ng-if="!isUserLogged">
+             <div class="box-header with-border">
+                <h3 class="box-title">Vous n'êtes pas connecté!</h3>
+            </div>
+            <div class="box-body">
+                <a href="#!/login" class="btn btn-info">Se connecter</a>
+            </div>
+        </div>
+        <div class="box box-info" ng-if="isUserLogged">
+            <div class="box-header with-border">
+              <h3 class="box-title">Déconnexion</h3>
+            </div>
+			<div class="box-body">
+			     <p>Redirection sur la page d'accueil dans {{counter}} secondes.</p>
+			</div>
+          </div>
+        
+    </div>
+</div>

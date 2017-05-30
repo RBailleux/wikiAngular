@@ -59,6 +59,10 @@ app.config(['$routeProvider', function($routeProvider){
 		templateUrl: 'templates/signup.tpl.html',
 		controller: "SignupController",
 		controllerAs: 'ctrl',
+	}).when('/search', {
+		templateUrl: 'templates/search.tpl.html',
+		controller: "SearchController",
+		controllerAs: 'ctrl',
 	}).when('/user', {
 		templateUrl: 'templates/user.tpl.html',
 		controller: "UserController",
@@ -162,7 +166,6 @@ app.controller('SignupController', ['$scope', '$http', '$rootScope', '$cookies',
 	$scope.errorsMsg = new Array();
 	$scope.postData=function(form){
 		//LOGIN
-		console.log($scope.login)
 		if(!$scope.login){
 			var msgIndex = $scope.errorsMsg.indexOf('L\'identifiant doit être renseigné');
 			$scope.errors = true;
@@ -227,6 +230,34 @@ app.controller('SignupController', ['$scope', '$http', '$rootScope', '$cookies',
 				'password' : $scope.password,
 				'email' : $scope.email
 			}
+		}
+	};
+}]);
+
+app.controller('SearchController', ['$scope', '$http', '$rootScope', '$cookies', '$window', 'utilit', function($scope, $http, $rootScope, $cookies, $window, utilit){
+	var ctrl = this;
+	$scope.errors = false;
+	$scope.errorsMsg = '';
+	$scope.title=true;
+	$scope.content=false;
+	$scope.author=false;
+	$scope.postData=function(form){
+		if(!$scope.keyWords){
+			$scope.errors = true;
+			$scope.errorsMsg = 'Vous devez renseigner des mots clef';
+		}
+		else{
+			$scope.errors = false;
+			$scope.errorsMsg = '';
+			var dataForm = 
+			{
+				'keywords' : $scope.keywords, 
+				'title' : $scope.title,
+				'content' : $scope.content,
+				'author' : $scope.author
+			};
+			console.log(dataForm);
+			
 		}
 	};
 }]);

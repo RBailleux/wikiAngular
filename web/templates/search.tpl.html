@@ -1,0 +1,46 @@
+<div class="row">
+    <div class="col-md-12">
+        <div class="box box-info">
+            <div class="box-header with-border">
+              <h3 class="box-title">Recherche</h3>
+            </div>
+            <!-- /.box-header -->
+            <!-- form start -->
+            <form class="form-horizontal" ng-controller="SearchController" name="searchSubmit" novalidate>
+                <div class="alert alert-danger" ng-show="errors">{{errorsMsg}}</div>
+              <div class="box-body">
+                <div class="form-group">
+                  <label for="keywords" class="col-sm-2 control-label">Mots clef</label>
+
+                  <div class="col-sm-10">
+                    <input type="text" class="form-control" id="keywords" placeholder="Mots clef" ng-model="keyWords" required>
+                    <div class="checkbox">
+                        <p>Rechercher par :</p>
+	                  <label>
+	                    <input type="checkbox" ng-model="title"> Titres
+	                  </label>
+	                </div>
+	                <div class="checkbox">
+                      <label>
+                        <input type="checkbox" ng-model="content"> Contenus
+                      </label>
+                    </div>
+                    <div class="checkbox">
+                      <label>
+                        <input type="checkbox" ng-model="author"> Auteurs
+                      </label>
+                    </div>
+                  </div>
+                </div>
+                
+              </div>
+              <!-- /.box-body -->
+              <div class="box-footer">
+                <button type="submit" value="SUBMIT" class="btn btn-info pull-right" ng-click="postData(searchSubmit)">Rechercher</button>
+              </div>
+              <!-- /.box-footer -->
+            </form>
+          </div>
+        
+    </div>
+</div>

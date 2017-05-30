@@ -66,8 +66,16 @@ app.controller('FrontController', ['$scope', '$http', '$rootScope', function($sc
 	 var ctrl = this;
 }]);
 
-app.controller('LoginController', ['$scope', '$http', '$rootScope', function($scope, $http, $rootScope){
+app.controller('LoginController', ['$scope', '$http', '$rootScope', '$cookies', 'utilit', function($scope, $http, $rootScope, $cookies, utilit){
 	 var ctrl = this;
+    $scope.postData=function(form){
+    	var dataForm = 
+    		{
+    			'login' : $scope.login, 
+    			'password' : $scope.password
+    		}
+		utilit.arrayToJson(dataForm);
+    };
 }]);
 
 app.controller('LogoutController', ['$scope', '$http', '$rootScope', function($scope, $http, $rootScope){
@@ -87,9 +95,14 @@ app.controller('PageController', ['$scope', '$http', '$rootScope', function($sco
 	 var ctrl = this;
 }]);
 
-app.controller('PageSlugController', ['$scope', '$http', '$routeParams', '$rootScope', function($scope, $http, $routeParams, $rootScope){
+app.controller('PageSlugController', ['$scope', '$http', '$routeParams', '$rootScope', '$sce', function($scope, $http, $routeParams, $rootScope, $sce){
       var ctrl= this;
       ctrl.slug = $routeParams.slug;
+      ctrl.wikiExists = true;
+      $scope.wikiContent = '<b>Nope</b>';
+      if(ctrl.wikiExists){
+    	  $scope.wikiContent = '<b>Yes</b>';
+      }
       if(ctrl.slug === 'last'){
     	  //@TODO RETURN THE LAST SUBMITED PAGE
     	  ctrl.slug = 'last submited page';
@@ -126,7 +139,7 @@ app.controller('PageEditController', ['$scope', '$http', '$routeParams', '$rootS
       toolbar: 'undo redo | bold italic | alignleft aligncenter alignright | code'
     };
     
-    $scope.postData=function(testForm){
+    $scope.postData=function(form){
     	var dataForm = 
     		{
     			'title' : $scope.initialTitle, 

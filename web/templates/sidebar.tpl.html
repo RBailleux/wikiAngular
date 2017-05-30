@@ -7,6 +7,9 @@
         <li><a href="#!/"><i class="fa fa-home"></i> <span>Accueil</span></a></li>
         <li><a href="#!/page/last"><i class="fa fa-clock-o"></i> <span>Dernier wiki</span></a></li>
         <li><a href="#!/page/best_rated"><i class="fa fa-star"></i> <span>Meilleur wiki</span></a></li>
+        <li ng-show="!isUserLogged"class="header">ACTION</li>
+        <li ng-show="!isUserLogged"><a href="#!/login"><i class="fa fa-user"></i> <span>Se connecter</span></a></li>
+        <li ng-show="!isUserLogged"><a href="#!/signup"><i class="fa fa-chevron-right"></i> <span>S'inscrire</span></a></li>
         <li ng-show="isUserLogged"class="header">VOUS</li>
         <li ng-show="isUserLogged"><a href="#!/user"><i class="fa fa-user"></i> <span>Profil</span></a></li>
         <li ng-show="isUserLogged"><a href="#!/logout"><i class="fa fa-power-off"></i> <span>Se déconnecter</span></a></li>

@@ -15,6 +15,7 @@
             <!-- /.box-header -->
             <!-- form start -->
             <form class="form-horizontal" ng-controller="LoginController" name="loginSubmit" novalidate>
+                <div class="alert alert-danger" ng-show="errors">{{errorsMsg}}</div>
               <div class="box-body">
                 <div class="form-group">
                   <label for="inputEmail3" class="col-sm-2 control-label">Identifiant</label>

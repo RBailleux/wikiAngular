@@ -91,6 +91,8 @@ app.controller('FrontController', ['$scope', '$http', '$rootScope', function($sc
 app.controller('LoginController', ['$scope', '$http', '$rootScope', '$cookies', '$window', 'utilit', function($scope, $http, $rootScope, $cookies, $window, utilit){
 	var ctrl = this;
 	$scope.isUserLogged = utilit.isUserLogged();
+	$scope.errors = false;
+	$scope.errorsMsg = '';
 	$scope.postData=function(form){
 		var dataForm = 
 			{
@@ -100,6 +102,11 @@ app.controller('LoginController', ['$scope', '$http', '$rootScope', '$cookies', 
 		utilit.doLogin(utilit.arrayToJson(dataForm));
 		if(utilit.isUserLogged()){
 			$window.location.href ='#!';
+		}
+		else{
+			$scope.errors = true;
+			$scope.errorsMsg = 'L\'identifiant ou le mot de passe est incorrect';
+			$scope.errors = 'L\'identifiant ou le mot de passe est incorrect';
 		}
 	};
 }]);

@@ -9,11 +9,11 @@
 		  </ol>
         <div class="box box-info">
             <div class="box-header with-border">
-                  
+                  <h3 ng-if="!wikiNotNew">{{ctrl.title}}</h3>
             </div>
             <div class="box-body">
                 <div class="row">
-					<div class="col-md-12" ng-if="wikiExists">
+					<div class="col-md-12" ng-if="wikiExists && wikiNotNew">
 						<h1>{{ctrl.title}}</h1>
                         <div ng-bind-html="content"></div>
 					</div>

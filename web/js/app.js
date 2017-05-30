@@ -303,6 +303,7 @@ app.controller('PageSlugController', ['$scope', '$http', '$routeParams', '$rootS
 	
 	$scope.isUserLogged = utilit.isUserLogged();
 	$scope.wikiExists = true;
+	$scope.wikiNotNew = true;
 	ctrl.slug = $routeParams.slug;
 	
 	switch(ctrl.slug){
@@ -311,6 +312,7 @@ app.controller('PageSlugController', ['$scope', '$http', '$routeParams', '$rootS
 		case 'best_rated':
 			break;
 		case 'new':
+			$scope.wikiNotNew = false;
 			ctrl.title = 'Nouvelle page';
 			break;
 		default:
@@ -339,38 +341,33 @@ app.controller('PageRevisionController', ['$scope', '$http', '$routeParams', '$r
 app.controller('PageEditController', ['$scope', '$http', '$routeParams', '$rootScope','$cookies', 'utilit',  function($scope, $http, $routeParams, $rootScope, $cookies, utilit){
     var ctrl= this;
     ctrl.slug = $routeParams.slug;
-    ctrl.pageTitle = "Création / Édition : "+ctrl.slug;
+    ctrl.pageTitle = "Édition : "+ctrl.slug;
     ctrl.userToken = 'userToken123456';
     
-    $scope.initialContent = 'Initial content';
+    var promise = utilit.getData($rootScope.wikiDataServer+'/page/'+$routeParams.slug+".json");
+	promise.then(function(response){
+		if(response){
+		    $scope.initialContent = response.content;
+		    $scope.initialTitle = response.title;
 
-    $scope.getContent = function() {
-      console.log('Editor content:', $scope.initialContent);
-    };
 
-    $scope.setContent = function() {
-      $scope.initialContent = 'Time: ' + (new Date());
-    };
-
-    $scope.editorOptions = {
-      plugins: 'link image code',
-      toolbar: 'undo redo | bold italic | alignleft aligncenter alignright | code'
-    };
-    
-    $scope.postData=function(form){
-    	var dataForm = 
-    		{
-    			'title' : $scope.initialTitle, 
-    			'content' : $scope.initialContent,
-    			'userToken' : ctrl.userToken
-    		}
-		utilit.arrayToJson(dataForm);
-    };
-    
-    // Retrieving a cookie
-    var favoriteCookie = $cookies.get('myFavorite');
-    // Setting a cookie
-    $cookies.put('myFavorite', 'oatmeal');
+		    $scope.editorOptions = {
+		      plugins: 'link image code',
+		      toolbar: 'undo redo | bold italic | alignleft aligncenter alignright | code'
+		    };
+		    
+		    $scope.postData=function(form){
+		    	var dataForm = 
+		    		{
+		    			'title' : $scope.initialTitle, 
+		    			'content' : $scope.initialContent,
+		    			'userToken' : ctrl.userToken
+		    		}
+				utilit.arrayToJson(dataForm);
+		    };
+			
+		}
+	});
 }]);
 
 app.controller('NotFoundController', ['$scope', '$http', '$rootScope', function($scope, $http, $rootScope){

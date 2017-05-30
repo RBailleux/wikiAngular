@@ -2,7 +2,7 @@ var app = angular.module("WikiApp", ["ngCookies", "ngTouch", "ngMap", "ngRoute",
 
 //FACTORY
 
-app.factory('utilit', ['$cookies', function ($cookies) {
+app.factory('utilit', ['$cookies', '$rootScope', function ($cookies, $rootScope) {
  return {
      arrayToJson: function(data) {
          console.log(JSON.stringify(data));

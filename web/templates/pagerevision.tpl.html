@@ -1,1 +1,53 @@
-<h1>Page - {{ctrl.slug}} - Révision</h1>
+<div class="row">
+    <div class="col-md-12">
+    	<ol class="breadcrumb">
+		    <li><a href="#"><i class="fa fa-home"></i> <span>Accueil</span></a></li>
+		    <li>Page - 
+		    	<span ng-if="wikiExists"><a href="#!/page/{{ctrl.slug}}">{{ctrl.title}}</a></span>
+		    	<span ng-if="!wikiExists">Non trouvée</span>
+		    </li>
+		    <li class="active" ng-if="wikiExists">
+		    	Révisions
+		    </li>
+		</ol>
+        <div class="box box-info" ng-if="wikiExists">
+            <div class="box-header with-border">
+              <h3 class="box-title">Révisions</h3>
+            </div>
+
+              <div class="box-body">
+              	<ol class="breadcrumb">
+              		<li>
+              			<i class="fa fa-circle" style="color:green;"></i> <span>En ligne</span>
+              		</li>
+              		<li>
+              			<i class="fa fa-circle" style="color:orange;"></i> <span>En attente de validation</span>
+              		</li>
+              		<li>
+              			<i class="fa fa-circle" style="color:grey;"></i> <span>Brouillon</span>
+              		</li>
+              		<li>
+              			<i class="fa fa-circle" style="color:red;"></i> <span>Bloquée</span>
+              		</li>
+              	</ol>
+				<ol>
+					<li ng-repeat="r in ctrl.revisions track by $index">
+						<button class="btn btn-primary" ng-click="r.show = true">Afficher</button>
+						<span ng-if="r.status == 'online'"><i class="fa fa-circle" style="color:green;"></i></span>
+						<span ng-if="r.status == 'canceled'"><i class="fa fa-circle" style="color:red;"></i></span>
+						<span ng-if="r.status == 'draft'"><i class="fa fa-circle" style="color:grey;"></i></span>
+						<span ng-if="r.status == 'pending'"><i class="fa fa-circle" style="color:orange;"></i></span>
+						<span ng-if="r.status == 'pending_validation'"><i class="fa fa-circle" style="color:orange;"></i></span>
+						<p ng-show="r.show" ng-hide="!r.show" ng-bind-html="r.content"></p>
+						<p ng-show="r.show" ng-hide="!r.show" ng-if="r.status == 'pending' || r.status == 'pending_validation'">
+							<button class="btn btn-success" ng-click="setOnline(r.id)">Mettre en ligne</button>
+						</p>
+						<HR/>
+					</li>
+				</ol>
+              </div>
+
+          </div>
+        
+    </div>
+</div>

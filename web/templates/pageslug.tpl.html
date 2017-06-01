@@ -60,9 +60,9 @@
                 </div>
             </div>
         </div>
-        <div class="box-footer" ng-if="hasContent">
-        	<a href="" class="pull-right">Voir les révisions</a>  
-        	<span>Dernière révision le {{ctrl.date}}</span>
+        <div class="box-footer">
+        	<a href="#!/page/{{ctrl.slug}}/revision" class="pull-right">Voir les révisions</a>  
+        	<span ng-if="ctrl.date">Dernière révision le {{ctrl.date}}</span>
         </div>
         <div class="box-footer" ng-if="hasContent && userIsLogged">
         	<a href="#!/page/{{ctrl.slug}}/edit">Modifier</a>  

@@ -428,9 +428,44 @@ app.controller('PageSlugController', ['$scope', '$http', '$routeParams', '$rootS
 	}
 }]);
 
-app.controller('PageRevisionController', ['$scope', '$http', '$routeParams', '$rootScope', function($scope, $http, $routeParams, $rootScope){
+app.controller('PageRevisionController', ['$scope', '$http', '$routeParams', '$rootScope', 'utilit', function($scope, $http, $routeParams, $rootScope, utilit){
     var ctrl= this;
     ctrl.slug = $routeParams.slug;
+    $scope.wikiExists = true;
+    var promise = utilit.getData($rootScope.wikiDataServer+'pages/'+$routeParams.slug);
+	promise.then(function(response){
+		if(response){
+			dataSlug = response[0];
+			$scope.wikiExists = true;
+			ctrl.title = dataSlug.title;
+			
+			$scope.hasContent = false;
+			ctrl.revisions = new Array();
+			dataSlug.revisions.forEach(function(revision) {
+				  revision.open = false;
+				  revision.content = decodeURI(revision.content);
+				  ctrl.revisions.push(revision);
+			});
+			console.log(ctrl.revisions);
+		}
+		else{
+			$scope.wikiExists = false;
+		}
+	});
+	
+	$scope.setOnline = function(id)
+	{
+		var promise = utilit.getData($rootScope.wikiDataServer+'pages/'+$routeParams.slug+'/revision/'+id+'/online');
+		promise.then(function(response){
+			if(response){
+				alert("La page a été mise à jour")
+				window.location.reload(true); 
+			}
+			else{
+				alert("Erreur")
+			}
+		});
+	}
 }]);
 
 app.controller('PageEditController', ['$scope', '$http', '$routeParams', '$rootScope','$cookies', 'utilit', '$window',  function($scope, $http, $routeParams, $rootScope, $cookies, utilit, $window){

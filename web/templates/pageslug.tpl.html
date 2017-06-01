@@ -6,8 +6,22 @@
 		    	<span ng-if="wikiExists">{{ctrl.title}}</span>
 		    	<span ng-if="!wikiExists">Non trouvée</span>
 		    </li>
-		  </ol>
-        <div class="box box-info">
+		</ol>
+		<div class="box box-info" ng-if="wikiAll">
+			<div class="box-header with-border">
+                  <h3 ng-if="!wikiNotNew">{{ctrl.title}}</h3>
+            </div>
+            <div class="box-body">
+                <div class="row">
+					<div class="col-md-12">
+						<ul ng-repeat="wiki in allWiki">
+							<li><a href="#!/page/{{wiki.slug}}">{{wiki.title}}</a>
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+        <div class="box box-info" ng-if="!wikiAll">
             <div class="box-header with-border">
                   <h3 ng-if="!wikiNotNew">{{ctrl.title}}</h3>
             </div>

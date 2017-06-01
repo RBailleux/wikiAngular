@@ -11,7 +11,7 @@ app.factory('utilit', ['$cookies', '$rootScope', '$http', function ($cookies, $r
 	
 	methods.doLogin = function(data){
 		data = methods.arrayToJson(data);
-		logUser = methods.sumbitData(data, "POST", $rootScope.dataServer+"login");
+		logUser = methods.submitData(data, "POST", $rootScope.dataServer+"login");
 		logUser.then(function(response){
 			if(response){
 				$log = $cookies.get('angularWikiUserToken');
@@ -48,7 +48,7 @@ app.factory('utilit', ['$cookies', '$rootScope', '$http', function ($cookies, $r
 		if(logUser){
 			return true;
 		}
-		return false;
+		return true;
 	};
 	
 	methods.isValidEmail = function(email){
@@ -348,12 +348,21 @@ app.controller('PageSlugController', ['$scope', '$http', '$routeParams', '$rootS
 	$scope.isUserLogged = utilit.isUserLogged();
 	$scope.wikiExists = true;
 	$scope.wikiNotNew = true;
+	$scope.wikiAll = false;
 	ctrl.slug = $routeParams.slug;
 	
 	switch(ctrl.slug){
 		case 'last':
 			break;
 		case 'best_rated':
+			break;
+		case 'all':
+			$scope.wikiAll = true;
+			ctrl.title = "Tous les wikis";
+			var promise = utilit.getData($rootScope.wikiDataServer+"pages/last");
+			var data = promise.then(function(response){
+				$scope.allWiki = response;
+			});
 			break;
 		case 'new':
 			$scope.wikiExists = false;
@@ -396,7 +405,7 @@ app.controller('PageSlugController', ['$scope', '$http', '$routeParams', '$rootS
 					$scope.hasContent = false;
 					dataSlug.revisions.forEach(function(revision) {
 						  if(revision.status == 'online'){
-							  $scope.content = revision.content;
+							  $scope.content = decodeURI(revision.content);
 							  var date = new Date(dataSlug.createdAt);
 							  ctrl.date = date.toLocaleDateString();
 							  if($scope.content.length > 0){

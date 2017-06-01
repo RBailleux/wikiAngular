@@ -50,7 +50,7 @@
 			                    <input type="text" class="form-control" id="titre" placeholder="Titre" ng-model="title" required>
                 			</div>
 			                <div class="col-md-6 col-md-offset-3">
-		                		<button type="submit" value="SUBMIT" class="btn btn-info" ng-click="postData(searchSubmit)">Envoyer</button>
+		                		<button type="submit" value="SUBMIT" class="btn btn-info" ng-click="postData(pageSubmit)">Envoyer</button>
 			                </div>
 						</form>
 					</div>
@@ -62,10 +62,25 @@
         </div>
         <div class="box-footer">
         	<a href="#!/page/{{ctrl.slug}}/revision" class="pull-right">Voir les révisions</a>  
+        	<span ng-if="ctrl.ranking">Note des utilisateurs : {{ctrl.ranking}} / 5</span>
         	<span ng-if="ctrl.date">Dernière révision le {{ctrl.date}}</span>
         </div>
-        <div class="box-footer" ng-if="hasContent && userIsLogged">
-        	<a href="#!/page/{{ctrl.slug}}/edit">Modifier</a>  
+        <div class="box-footer" ng-if="hasContent && !userIsLogged">
+        	<form class="form-horizontal" ng-controller="PageSlugController" name="newRankSubmit">
+        		<div class="col-md-1">
+                 	<label for="rank" class="col-sm-2 control-label">Note</label>
+                 	<select id="rank" ng-model="rank">
+						<option value="0">0/5</option> 
+						<option value="1">1/5</option> 
+						<option value="2">2/5</option> 
+						<option value="3">3/5</option> 
+						<option value="4">4/5</option> 
+						<option value="5">5/5</option> 
+					</select>
+					<button type="submit" value="SUBMIT" class="btn btn-info" ng-click="postRank()">Noter</button>
+             	</div>
+        	</form>
+        	<a class="pull-right" href="#!/page/{{ctrl.slug}}/edit">Modifier ce wiki</a>  
         </div>
     </div>
 </div>

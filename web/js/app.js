@@ -33,13 +33,6 @@ app.factory('utilit', ['$cookies', '$rootScope', '$http', function ($cookies, $r
 			url: "http://localhost/ECV2016/wikiSymfony/web/app_dev.php/signup",
 			method: "POST",
 			data: _data
-		}).then(function(response){
-			if(response){
-				return true;
-			}
-			else{
-				return false;
-			}
 		});
 	}
 	
@@ -48,7 +41,7 @@ app.factory('utilit', ['$cookies', '$rootScope', '$http', function ($cookies, $r
 		if(logUser){
 			return true;
 		}
-		return true;
+		return false;
 	};
 	
 	methods.isValidEmail = function(email){
@@ -289,21 +282,21 @@ app.controller('SignupController', ['$scope', '$http', '$rootScope', '$cookies',
 				'plainPassword' : $scope.password1,
 				'email' : $scope.email
 			}
-			console.log(dataForm);
 			var signup = utilit.doSignup(dataForm);
-			if(signup){
+			var success = signup.then(function(response){
 				$scope.errors = false;
 				$scope.success = true;
 				$scope.successMsg = "Votre compte a été créé";
-			}
-			else{
+				return true;
+			}, function(response){
 				$scope.success = false;
 				$scope.errors = true;
-				var msgIndex = $scope.errorsMsg.indexOf('Votre compte n\'a pas pu être créé');
+				var msgIndex = $scope.errorsMsg.indexOf(response.data.error);
 				if (msgIndex < 0) {
-					$scope.errorsMsg.push('Votre compte n\'a pas pu être créé');
+					$scope.errorsMsg.push(response.data.error);
 				}
-			}
+				return false;
+			})
 		}
 	};
 }]);
@@ -424,6 +417,9 @@ app.controller('PageSlugController', ['$scope', '$http', '$routeParams', '$rootS
 					$scope.wikiExists = false;
 				}
 			});
+			$scope.postRank = function(){
+				console.log($scope.rank);
+			}
 			break;
 	}
 }]);
@@ -455,7 +451,7 @@ app.controller('PageRevisionController', ['$scope', '$http', '$routeParams', '$r
 	
 	$scope.setOnline = function(id)
 	{
-		var promise = utilit.getData($rootScope.wikiDataServer+'pages/'+$routeParams.slug+'/revision/'+id+'/online');
+		var promise = utilit.submitData({}, "PATCH", $rootScope.wikiDataServer+'pages/'+$routeParams.slug+'/revision/'+id+'/online');
 		promise.then(function(response){
 			if(response){
 				alert("La page a été mise à jour")

@@ -353,6 +353,12 @@ app.controller('PageSlugController', ['$scope', '$http', '$routeParams', '$rootS
 	
 	switch(ctrl.slug){
 		case 'last':
+			$scope.wikiAll = true;
+			ctrl.title = "Dernier wikis";
+			var promise = utilit.getData($rootScope.wikiDataServer+"pages/last?offset=0&limit=1");
+			var data = promise.then(function(response){
+				$scope.allWiki = response;
+			});
 			break;
 		case 'best_rated':
 			break;

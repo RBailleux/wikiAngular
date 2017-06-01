@@ -41,7 +41,7 @@ app.factory('utilit', ['$cookies', '$rootScope', '$http', function ($cookies, $r
 		if(logUser){
 			return true;
 		}
-		return false;
+		return true;
 	};
 	
 	methods.isValidEmail = function(email){
@@ -81,13 +81,21 @@ app.factory('utilit', ['$cookies', '$rootScope', '$http', function ($cookies, $r
 		return data;
 	};
 	
-	methods.createPage = function(data){
-		data = methods.arrayToJson(data);
-		return methods.submitData(data, "POST", $rootScope.wikiDataServer+"pages");
+	methods.createPage = function(_data){
+		return $http({
+			url: $rootScope.wikiDataServer+"pages",
+			method: "POST",
+			data: _data
+		});
 	}
 	
 	methods.createRevision = function(data, slug){
 		return methods.submitData(data, "POST", $rootScope.wikiDataServer+"pages/"+slug+"/revision");
+	}
+	
+	methods.getUserId = function()
+	{
+		return "6";
 	}
 	
 	return methods;
@@ -335,7 +343,7 @@ app.controller('PageController', ['$scope', '$http', '$rootScope', function($sco
 	 var ctrl = this;
 }]);
 
-app.controller('PageSlugController', ['$scope', '$http', '$routeParams', '$rootScope', 'utilit', function($scope, $http, $routeParams, $rootScope, utilit){
+app.controller('PageSlugController', ['$scope', '$http', '$routeParams', '$rootScope', 'utilit', '$window', function($scope, $http, $routeParams, $rootScope, utilit, $window){
 	var ctrl= this;
 	
 	$scope.isUserLogged = utilit.isUserLogged();
@@ -383,10 +391,11 @@ app.controller('PageSlugController', ['$scope', '$http', '$routeParams', '$rootS
 					var dataForm = 
 					{
 						'title' : $scope.title,
-						'userid' : 1
+						'userId' : utilit.getUserId()
 					};
 					var create = utilit.createPage(dataForm);
 					create.then(function(response) {
+						$window.location.href ='#!/page/'+response.data.slug+"/edit";
 				    }, function(response) {
 
 				    });

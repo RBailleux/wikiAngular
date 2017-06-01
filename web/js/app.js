@@ -312,9 +312,6 @@ app.controller('SearchController', ['$scope', '$http', '$rootScope', '$cookies',
 	var ctrl = this;
 	$scope.errors = false;
 	$scope.errorsMsg = '';
-	$scope.title=true;
-	$scope.content=false;
-	$scope.author=false;
 	$scope.postData=function(form){
 		if(!$scope.keyWords){
 			$scope.errors = true;
@@ -323,13 +320,11 @@ app.controller('SearchController', ['$scope', '$http', '$rootScope', '$cookies',
 		else{
 			$scope.errors = false;
 			$scope.errorsMsg = '';
-			var dataForm = 
-			{
-				'keywords' : $scope.keywords, 
-				'title' : $scope.title,
-				'content' : $scope.content,
-				'author' : $scope.author
-			};			
+			var promise = utilit.getData($rootScope.wikiDataServer+"pages/search?q="+$scope.keyWords);
+			var data = promise.then(function(response){
+				$scope.result = response;
+			});
+			
 		}
 	};
 }]);

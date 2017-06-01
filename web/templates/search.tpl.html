@@ -14,22 +14,6 @@
 
                   <div class="col-sm-10">
                     <input type="text" class="form-control" id="keywords" placeholder="Mots clef" ng-model="keyWords" required>
-                    <div style="display:inline-block;"><p>Rechercher par :</p></div>
-                    <div class="checkbox" style="display:inline-block;">
-	                  <label>
-	                    <input type="checkbox" ng-model="title"> Titres
-	                  </label>
-	                </div>
-	                <div class="checkbox" style="display:inline-block;">
-                      <label>
-                        <input type="checkbox" ng-model="content"> Contenus
-                      </label>
-                    </div>
-                    <div class="checkbox" style="display:inline-block;">
-                      <label>
-                        <input type="checkbox" ng-model="author"> Auteurs
-                      </label>
-                    </div>
                   </div>
                 </div>
                 
@@ -42,7 +26,9 @@
               </div>
               <!-- /.box-body -->
               <div class="box-footer">
-                
+              	<ul ng-repeat="r in result">
+              		<li><a href="#!/page/{{r.slug}}">{{r.title}}</a></li>
+              	</ul>
               </div>
               <!-- /.box-footer -->
             </form>

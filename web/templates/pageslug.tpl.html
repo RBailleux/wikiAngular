@@ -15,19 +15,43 @@
                 <div class="row">
 					<div class="col-md-12" ng-if="wikiExists && wikiNotNew">
 						<h1>{{ctrl.title}}</h1>
-                        <div ng-bind-html="content"></div>
+                        <div ng-bind-html="content" ng-if="hasContent"></div>
+                        <div ng-if="!hasContent">
+                        	<a ng-if="!isUserLogged" href="#!/login">Cette page est incomplète. Contribuez !</a>
+							<a ng-if="isUserLogged" href="#!/page/{{ctrl.slug}}/edit">Cette page est incomplète. Contribuez !</a>
+                        </div>
 					</div>
-					<div class="col-md-12" ng-if="!wikiExists">
+					<div class="col-md-12" ng-if="!wikiExists && wikiNotNew">
 						<h1>Ce Wiki n'existe pas</h1>
 						<a ng-if="!isUserLogged" href="#!/login">Contribuer !</a>
 						<a ng-if="isUserLogged" href="#!/page/new">Contribuer !</a>
 					</div>
+					<div class="col-md-12 row" ng-if="!wikiExists && !wikiNotNew && isUserLogged">
+						<form class="form-horizontal" ng-controller="PageSlugController" name="newPageSubmit" novalidate>
+							<div class="alert alert-danger col-md-8 col-md-offset-2" ng-show="errors">
+								<p ng-repeat="error in errorsMsg">{{error}}</p>
+							</div>
+							<div class="col-md-6 col-md-offset-3">
+		                  		<label for="title" class="col-sm-2 control-label">Titre</label>
+			                    <input type="text" class="form-control" id="titre" placeholder="Titre" ng-model="title" required>
+                			</div>
+			                <div class="col-md-6 col-md-offset-3">
+		                		<button type="submit" value="SUBMIT" class="btn btn-info" ng-click="postData(searchSubmit)">Envoyer</button>
+			                </div>
+						</form>
+					</div>
+					<div class="col-md-12 row" ng-if="!wikiExists && !wikiNotNew && !isUserLogged">
+						<div class="alert alert-danger">Vous n'êtes pas connecté !</div>
+					</div>
                 </div>
             </div>
         </div>
-        <div class="box-footer" ng-if="wikiExists">
-        	<a href="">Voir les révisions</a>  
-        	<span class="pull-right">Le {{ctrl.date}} par {{ctrl.author}}</span>
+        <div class="box-footer" ng-if="hasContent">
+        	<a href="" class="pull-right">Voir les révisions</a>  
+        	<span>Dernière révision le {{ctrl.date}}</span>
+        </div>
+        <div class="box-footer" ng-if="hasContent && userIsLogged">
+        	<a href="#!/page/{{ctrl.slug}}/edit">Modifier</a>  
         </div>
     </div>
 </div>

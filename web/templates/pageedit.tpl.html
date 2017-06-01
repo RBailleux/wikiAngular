@@ -1,8 +1,8 @@
-<div class="row">
+<div class="row" ng-if="!errors">
     <div class="col-md-12">
     	<ol class="breadcrumb">
 		    <li><a href="#"><i class="fa fa-home"></i> <span>Accueil</span></a></li>
-		    <li><a href="#!/page/{{ctrl.slug}}">{{ctrl.title}}</a></li>
+		    <li><a href="#!/page/{{ctrl.slug}}">{{ctrl.pageTitle}}</a></li>
 		    <li class="active">Édition</li>
 		</ol>
         <div class="box box-info">
@@ -15,9 +15,6 @@
                 <div class="row">
                     <div class="col-md-12" ng-if="isUserLogged">
                         <form ng-controller="PageEditController" name="wikiSubmit" novalidate>
-		                    <div class="form-group">
-		                        <input type="text" class="form-control" id="title" placeholder="Titre" ng-model="initialTitle" required>
-		                    </div>
 		                    <div class="form-group">
 		                        <textarea class="form-control" ui-tinymce="editorOptions" ng-model="initialContent" required></textarea>
 		                    </div>

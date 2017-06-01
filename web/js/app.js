@@ -10,8 +10,17 @@ app.factory('utilit', ['$cookies', '$rootScope', '$http', function ($cookies, $r
 	};
 	
 	methods.doLogin = function(data){
-		var logUser = $cookies.get('angularWikiUserToken');
- 		$cookies.put('angularWikiUserToken', '456');
+		data = methods.arrayToJson(data);
+		logUser = methods.sumbitData(data, "POST", $rootScope.dataServer+"login");
+		logUser.then(function(response){
+			if(response){
+				$log = $cookies.get('angularWikiUserToken');
+		 		$cookies.put('angularWikiUserToken', response.data.usertoken);
+			}
+			else{
+				return false;
+			}
+		});
 	};
 	
 	methods.doLogout = function(){
@@ -23,7 +32,7 @@ app.factory('utilit', ['$cookies', '$rootScope', '$http', function ($cookies, $r
 		if(logUser){
 			return true;
 		}
-		return false;
+		return true;
 	};
 	
 	methods.isValidEmail = function(email){
@@ -40,16 +49,17 @@ app.factory('utilit', ['$cookies', '$rootScope', '$http', function ($cookies, $r
 	};
 	
 	methods.getData = function(_url){
-		return $http.get(_url)
+		var data =  $http.get(_url)
 	    .then(function(response) {
 	        return response.data;
 	    }, function(response) {
 	        return false;
 	    });
+		return data;
 	};
 	
 	methods.isWikiCreated = function(slug){
-		var slugData = methods.getData($rootScope.wikiDataServer+'/page/'+slug+".json");
+		var slugData = methods.getData($rootScope.wikiDataServer+'/pages/'+slug);
 		var data = slugData.then(function(response){
 			if(response){
 				return true;
@@ -60,6 +70,13 @@ app.factory('utilit', ['$cookies', '$rootScope', '$http', function ($cookies, $r
 		});
 		return data;
 	};
+	
+	methods.createPage = function(data){
+		console.log(data)
+		data = methods.arrayToJson(data);
+		console.log(data);
+		return methods.submitData(data, "POST", $rootScope.wikiDataServer+"pages");
+	}
 	
 	return methods;
 }]);
@@ -119,7 +136,7 @@ app.config(['$routeProvider', function($routeProvider){
 
 app.run(['$rootScope', '$route', 'utilit', function($rootScope, $route, utilit) {
 	$rootScope.$route = $route;
-	$rootScope.wikiDataServer = 'test';
+	$rootScope.wikiDataServer = 'http://localhost/ECV2016/wikiSymfony/web/app_dev.php/';
 	$rootScope.isUserLogged = utilit.isUserLogged();
 }]);
 
@@ -152,7 +169,7 @@ app.controller('LoginController', ['$scope', '$http', '$rootScope', '$cookies', 
 				'login' : $scope.login, 
 				'password' : $scope.password
 			}
-			utilit.doLogin(utilit.arrayToJson(dataForm));
+			utilit.doLogin(dataForm);
 			if(utilit.isUserLogged()){
 				$window.location.href ='#!';
 			}
@@ -312,22 +329,60 @@ app.controller('PageSlugController', ['$scope', '$http', '$routeParams', '$rootS
 		case 'best_rated':
 			break;
 		case 'new':
+			$scope.wikiExists = false;
 			$scope.wikiNotNew = false;
+			$scopeerrors = false;
+			$scope.errorsMsg = new Array();
 			ctrl.title = 'Nouvelle page';
-			break;
-		default:
-			var promise = utilit.getData($rootScope.wikiDataServer+'/page/'+$routeParams.slug+".json");
-			promise.then(function(response){
-				if(response){
-					console.log(response);
-					$scope.wikiExists = true;
-					ctrl.title = response.title;
-					$scope.content = response.content;
-					ctrl.date = response.createdAt;
-					ctrl.author = response.createdBy;
+			$scope.postData=function(form){
+				if(!$scope.title){
+					var msgIndex = $scope.errorsMsg.indexOf('Le titre doit être renseigné');
+					$scope.errors = true;
+					if (msgIndex < 0) {
+						$scope.errorsMsg.push('Le titre doit être renseigné');
+					}
 				}
 				else{
+					$scope.errors = false;
+					$scope.errorsMsg = new Array();
+					var dataForm = 
+					{
+						'title' : $scope.title,
+						'userid' : 1
+					};
+					var create = utilit.createPage(dataForm);
+					create.then(function(response) {
+				        console.log(response);
+				    }, function(response) {
+				        console.log("Erreur");
+				        console.log(response);
+				    });
+				}
+			}
+			break;
+		default:
+			var promise = utilit.getData($rootScope.wikiDataServer+'pages/'+$routeParams.slug);
+			promise.then(function(response){
+				if(response){
+					dataSlug = response[0];
+					console.log(dataSlug);
 					$scope.wikiExists = true;
+					ctrl.title = dataSlug.title;
+					
+					$scope.hasContent = false;
+					dataSlug.revisions.forEach(function(revision) {
+						  if(revision.status == 'online'){
+							  $scope.content = revision.content;
+							  var date = new Date(dataSlug.createdAt);
+							  ctrl.date = date.toLocaleDateString();
+							  if($scope.content.length > 0){
+								  $scope.hasContent = true;
+							  }
+						  }
+					});
+				}
+				else{
+					$scope.wikiExists = false;
 				}
 			});
 			break;
@@ -343,35 +398,39 @@ app.controller('PageEditController', ['$scope', '$http', '$routeParams', '$rootS
     var ctrl= this;
     ctrl.slug = $routeParams.slug;
     ctrl.pageTitle = "Édition : "+ctrl.slug;
+    $scope.errors = true;
     $scope.isUserLogged = utilit.isUserLogged();
-    if($scope.isUserLogged){
-        ctrl.userToken = 'userToken123456';
-    }
     
-    var promise = utilit.getData($rootScope.wikiDataServer+'/page/'+$routeParams.slug+".json");
+    var promise = utilit.getData($rootScope.wikiDataServer+'pages/'+$routeParams.slug);
 	promise.then(function(response){
-		if(response){
-		    $scope.initialContent = response.content;
-		    $scope.initialTitle = response.title;
-		    ctrl.title = response.title;
+		$scope.errors = false;
+		var data = response[0];
+		console.log(data)
+	    $scope.initialContent = "";
+	    $scope.initialTitle = data.title;
+	    ctrl.pageTitle = "Édition : "+data.title;
+	    ctrl.title = data.title;
+	    
+	    data.revisions.forEach(function(revision) {
+			  if(revision.status == 'online'){
+				  $scope.initialContent = revision.content;
+			  }
+		});
 
-
-		    $scope.editorOptions = {
-		      plugins: 'link image code',
-		      toolbar: 'undo redo | bold italic | alignleft aligncenter alignright | code'
-		    };
-		    
-		    $scope.postData=function(form){
-		    	var dataForm = 
-		    		{
-		    			'title' : $scope.initialTitle, 
-		    			'content' : $scope.initialContent,
-		    			'userToken' : ctrl.userToken
-		    		}
-				utilit.arrayToJson(dataForm);
-		    };
-			
-		}
+	    $scope.editorOptions = {
+	      plugins: 'link image code',
+	      toolbar: 'undo redo | bold italic | alignleft aligncenter alignright | code'
+	    };
+	    
+	    $scope.postData=function(form){
+	    	var dataForm = 
+	    		{
+	    			'title' : $scope.initialTitle, 
+	    			'content' : $scope.initialContent,
+	    			'userToken' : ctrl.userToken
+	    		}
+			utilit.arrayToJson(dataForm);
+	    };
 	});
 }]);
 

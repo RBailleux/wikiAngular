@@ -1,3 +1,6 @@
+<div class="row" ng-if="errors">
+	{{errors}}
+</div>
 <div class="row" ng-if="!errors">
     <div class="col-md-12">
     	<ol class="breadcrumb">
@@ -13,6 +16,16 @@
             </div>
             <div class="box-body">
                 <div class="row">
+                	<div class="col-md-12" ng-if="success">
+                		<div class="alert alert-success col-md-8 col-md-offset-2">
+							<p>Vos modifications ont été enregistrées</p>
+						</div>
+                	</div>
+                	<div class="col-md-12" ng-if="successError">
+                		<div class="alert alert-danger col-md-8 col-md-offset-2">
+							{{ctrl.successErrorMsg}}
+						</div>
+                	</div>
                     <div class="col-md-12" ng-if="isUserLogged">
                         <form ng-controller="PageEditController" name="wikiSubmit" novalidate>
 		                    <div class="form-group">

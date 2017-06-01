@@ -6,7 +6,7 @@ app.factory('utilit', ['$cookies', '$rootScope', '$http', function ($cookies, $r
 	var methods = {};
 	
 	methods.arrayToJson = function(data){
-		 console.log(JSON.stringify(data));
+		return(JSON.stringify(data));
 	};
 	
 	methods.doLogin = function(data){
@@ -27,12 +27,28 @@ app.factory('utilit', ['$cookies', '$rootScope', '$http', function ($cookies, $r
 		$cookies.remove('angularWikiUserToken');
 	};
 	
+	methods.doSignup = function(data){
+		var _data = methods.arrayToJson(data);
+		return $http({
+			url: "http://localhost/ECV2016/wikiSymfony/web/app_dev.php/signup",
+			method: "POST",
+			data: _data
+		}).then(function(response){
+			if(response){
+				return true;
+			}
+			else{
+				return false;
+			}
+		});
+	}
+	
 	methods.isUserLogged = function(){
 		var logUser = $cookies.get('angularWikiUserToken');
 		if(logUser){
 			return true;
 		}
-		return true;
+		return false;
 	};
 	
 	methods.isValidEmail = function(email){
@@ -42,10 +58,11 @@ app.factory('utilit', ['$cookies', '$rootScope', '$http', function ($cookies, $r
 	
 	methods.submitData = function(_data, _method, _url){
 		return $http({
-			method: _method,
 			url: _url,
-			data: _data
-		})
+			method: _method,
+			data: JSON.stringify(_data),
+			headers: {'Content-Type': 'application/json'}
+		});
 	};
 	
 	methods.getData = function(_url){
@@ -72,10 +89,12 @@ app.factory('utilit', ['$cookies', '$rootScope', '$http', function ($cookies, $r
 	};
 	
 	methods.createPage = function(data){
-		console.log(data)
 		data = methods.arrayToJson(data);
-		console.log(data);
 		return methods.submitData(data, "POST", $rootScope.wikiDataServer+"pages");
+	}
+	
+	methods.createRevision = function(data, slug){
+		return methods.submitData(data, "POST", $rootScope.wikiDataServer+"pages/"+slug+"/revision");
 	}
 	
 	return methods;
@@ -266,9 +285,24 @@ app.controller('SignupController', ['$scope', '$http', '$rootScope', '$cookies',
 			$scope.errors = false;
 			var dataForm = 
 			{
-				'login' : $scope.login, 
-				'password' : $scope.password,
+				'username' : $scope.login, 
+				'plainPassword' : $scope.password1,
 				'email' : $scope.email
+			}
+			console.log(dataForm);
+			var signup = utilit.doSignup(dataForm);
+			if(signup){
+				$scope.errors = false;
+				$scope.success = true;
+				$scope.successMsg = "Votre compte a été créé";
+			}
+			else{
+				$scope.success = false;
+				$scope.errors = true;
+				var msgIndex = $scope.errorsMsg.indexOf('Votre compte n\'a pas pu être créé');
+				if (msgIndex < 0) {
+					$scope.errorsMsg.push('Votre compte n\'a pas pu être créé');
+				}
 			}
 		}
 	};
@@ -295,9 +329,7 @@ app.controller('SearchController', ['$scope', '$http', '$rootScope', '$cookies',
 				'title' : $scope.title,
 				'content' : $scope.content,
 				'author' : $scope.author
-			};
-			console.log(dataForm);
-			
+			};			
 		}
 	};
 }]);
@@ -352,10 +384,8 @@ app.controller('PageSlugController', ['$scope', '$http', '$routeParams', '$rootS
 					};
 					var create = utilit.createPage(dataForm);
 					create.then(function(response) {
-				        console.log(response);
 				    }, function(response) {
-				        console.log("Erreur");
-				        console.log(response);
+
 				    });
 				}
 			}
@@ -365,7 +395,6 @@ app.controller('PageSlugController', ['$scope', '$http', '$routeParams', '$rootS
 			promise.then(function(response){
 				if(response){
 					dataSlug = response[0];
-					console.log(dataSlug);
 					$scope.wikiExists = true;
 					ctrl.title = dataSlug.title;
 					
@@ -394,18 +423,20 @@ app.controller('PageRevisionController', ['$scope', '$http', '$routeParams', '$r
     ctrl.slug = $routeParams.slug;
 }]);
 
-app.controller('PageEditController', ['$scope', '$http', '$routeParams', '$rootScope','$cookies', 'utilit',  function($scope, $http, $routeParams, $rootScope, $cookies, utilit){
+app.controller('PageEditController', ['$scope', '$http', '$routeParams', '$rootScope','$cookies', 'utilit', '$window',  function($scope, $http, $routeParams, $rootScope, $cookies, utilit, $window){
     var ctrl= this;
     ctrl.slug = $routeParams.slug;
     ctrl.pageTitle = "Édition : "+ctrl.slug;
     $scope.errors = true;
     $scope.isUserLogged = utilit.isUserLogged();
+    $scope.success = false;
+    $scope.successError = false;
+    ctrl.userToken = "123";
     
     var promise = utilit.getData($rootScope.wikiDataServer+'pages/'+$routeParams.slug);
 	promise.then(function(response){
 		$scope.errors = false;
 		var data = response[0];
-		console.log(data)
 	    $scope.initialContent = "";
 	    $scope.initialTitle = data.title;
 	    ctrl.pageTitle = "Édition : "+data.title;
@@ -413,7 +444,7 @@ app.controller('PageEditController', ['$scope', '$http', '$routeParams', '$rootS
 	    
 	    data.revisions.forEach(function(revision) {
 			  if(revision.status == 'online'){
-				  $scope.initialContent = revision.content;
+				  $scope.initialContent = decodeURI(revision.content);
 			  }
 		});
 
@@ -421,17 +452,32 @@ app.controller('PageEditController', ['$scope', '$http', '$routeParams', '$rootS
 	      plugins: 'link image code',
 	      toolbar: 'undo redo | bold italic | alignleft aligncenter alignright | code'
 	    };
-	    
-	    $scope.postData=function(form){
-	    	var dataForm = 
-	    		{
-	    			'title' : $scope.initialTitle, 
-	    			'content' : $scope.initialContent,
-	    			'userToken' : ctrl.userToken
-	    		}
-			utilit.arrayToJson(dataForm);
-	    };
 	});
+	
+	$scope.postData=function(form){
+		if(!$scope.initialContent){
+			$scope.successError = true;
+			$scope.successErrorMsg = "Vous devez renseigner du contenu";
+			alert($scope.successErrorMsg)
+		}
+		else{
+	    	var dataForm = 
+    		{
+    			'status' : 'pending_validation',
+    			'content' : encodeURI($scope.initialContent)
+    		};
+	    	var revision = utilit.createRevision(dataForm, ctrl.slug);
+	    	revision.then(function(response){
+	    		alert('La modification a été enregistrée');
+	    		$window.location.href ='#!/page/'+ctrl.slug;
+				$scope.success = true;
+			}, function(response){
+				$scope.successError = true;
+				$scope.successErrorMsg = "Erreur !";
+			});
+		}
+    };
+
 }]);
 
 app.controller('NotFoundController', ['$scope', '$http', '$rootScope', function($scope, $http, $rootScope){

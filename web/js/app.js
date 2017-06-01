@@ -323,10 +323,11 @@ app.controller('PageSlugController', ['$scope', '$http', '$routeParams', '$rootS
 					$scope.wikiExists = true;
 					ctrl.title = response.title;
 					$scope.content = response.content;
-					
+					ctrl.date = response.createdAt;
+					ctrl.author = response.createdBy;
 				}
 				else{
-					$scope.wikiExists = false;
+					$scope.wikiExists = true;
 				}
 			});
 			break;
